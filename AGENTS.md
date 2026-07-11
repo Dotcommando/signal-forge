@@ -141,6 +141,10 @@ rename existing public contracts or ports without an explicit task.
 When a field has a closed set of string values, use an enum instead
 of a string-literal union.
 
+Constants and enums must belong to the narrowest module that owns their
+semantics. Do not create global constants or enum collections for unrelated
+concepts.
+
 When building objects with optional properties, prefer conditional
 object spread over repeatedly mutating an initially empty object.
 Preserve semantics for valid falsy values.
