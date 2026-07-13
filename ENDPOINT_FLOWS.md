@@ -420,13 +420,33 @@ live provider clients.
 
 ### Progress
 
-- [ ] Not started.
+- [x] Implemented `GetLatestContentItemsUseCase`.
+- [x] Implemented per-source partial error reporting.
+- [x] Implemented `LatestContentController` for `POST /content-items/latest`.
+- [x] Registered the controller, use case, validator, and empty registry in
+  `AppModule`.
+- [x] Added use-case and controller unit tests with fake adapters.
+- [x] Added e2e coverage for success plus partial failure and invalid request
+  handling.
+- [x] Verified with unit tests, e2e tests, build, and lint.
+
+### Post-Step Reassessment
+
+- No nested `AGENTS.md` update is needed; only the root instruction file exists.
+- Step 4a should add the first live adapter by implementing
+  `ContentSourcePort` and registering it in the existing `ContentSourceRegistry`
+  factory without changing the application use case or controller.
+- Step 4b should follow the same adapter boundary and reuse the current partial
+  error behavior for API failures.
+- Step 4c should pick one initial journal metadata API provider first; adding
+  all journal providers at once would make the step too large.
 
 ## Step 4. First live provider adapters
 
 ### Clarity Check
 
-Too large if all providers are implemented at once. Split by adapter.
+Too large if all providers are implemented at once. Split by adapter and keep
+the `POST /content-items/latest` contract stable.
 
 ### Step 4a. Reddit community adapter
 
@@ -442,7 +462,8 @@ Too large if all providers are implemented at once. Split by adapter.
 
 - implement Reddit OAuth API client;
 - implement Reddit mapper;
-- keep Reddit DTOs inside the adapter.
+- keep Reddit DTOs inside the adapter;
+- register the adapter in the existing `ContentSourceRegistry` factory.
 
 #### Verify
 
@@ -466,7 +487,8 @@ Too large if all providers are implemented at once. Split by adapter.
 
 - implement HN Algolia client;
 - implement HN mapper;
-- keep HN DTOs inside the adapter.
+- keep HN DTOs inside the adapter;
+- register the adapter in the existing `ContentSourceRegistry` factory.
 
 #### Verify
 
@@ -489,9 +511,11 @@ Too large if all providers are implemented at once. Split by adapter.
 #### Green
 
 - implement one initial journal metadata API client first;
-- keep room in the provider enum for Crossref, Europe PMC, NCBI E-utilities,
-  and DOAJ;
-- keep provider DTOs inside the adapter.
+- use the existing provider enum values for Crossref, Europe PMC, NCBI
+  E-utilities, and DOAJ;
+- keep provider DTOs inside the adapter;
+- register only implemented providers in the existing `ContentSourceRegistry`
+  factory.
 
 #### Verify
 
