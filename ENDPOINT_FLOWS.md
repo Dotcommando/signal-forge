@@ -318,13 +318,32 @@ Small, clear, and testable.
 
 ### Progress
 
-- [ ] Not started.
+- [x] Implemented `HealthController` at
+  `src/adapters/inbound/http/controllers/health.controller.ts`.
+- [x] Implemented `GetHealthUseCase` at
+  `src/app/health/get-health.use-case.ts`.
+- [x] Replaced the scaffold root endpoint with `GET /health`.
+- [x] Added unit coverage for the use case and controller delegation.
+- [x] Updated e2e coverage for `GET /health`.
+- [x] Verified with unit tests, e2e tests, build, and lint.
+
+### Post-Step Reassessment
+
+- No nested `AGENTS.md` update is needed; only the root instruction file exists.
+- Step 2 remains the correct next step, but it should reuse the current
+  `src/app` and `src/adapters/inbound/http/controllers` layout established by
+  this step.
+- Step 3 remains dependent on Step 2 contracts and should not define provider
+  DTOs in controller request or response objects.
+- Step 4 remains too large as a single implementation step and should stay
+  split by provider adapter.
 
 ## Step 2. Provider-independent latest-content contract
 
 ### Clarity Check
 
-Small enough if limited to contracts, enums, DTO validation, and fake adapters.
+Small enough if limited to contracts, enums, request validation, and fake
+adapter selection. Do not implement live provider API clients in this step.
 
 ### Red
 
@@ -338,7 +357,8 @@ Small enough if limited to contracts, enums, DTO validation, and fake adapters.
 - define source-kind and provider enums in the narrowest owning module;
 - define provider-independent request and response interfaces;
 - define `ContentSourcePort.fetchLatestContentItems()`;
-- add a registry contract that selects adapters by source kind/provider.
+- add a registry contract that selects adapters by source kind/provider;
+- keep HTTP DTO validation separate from provider adapter DTOs.
 
 ### Verify
 
@@ -368,7 +388,8 @@ Clear and testable after Step 2 contracts exist.
 - implement `GetLatestContentItemsUseCase`;
 - implement result merging and partial-error reporting;
 - implement `LatestContentController`;
-- use fake adapters for behavior tests.
+- use fake adapters for behavior tests;
+- register the controller and use case in `AppModule`.
 
 ### Verify
 
