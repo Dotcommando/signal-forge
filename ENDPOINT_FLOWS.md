@@ -367,13 +367,34 @@ adapter selection. Do not implement live provider API clients in this step.
 
 ### Progress
 
-- [ ] Not started.
+- [x] Added latest-content source kind enums and provider enums in
+  `src/app/content-item`.
+- [x] Added provider-independent latest-content request and result interfaces.
+- [x] Added `ContentSourcePort.fetchLatestContentItems()`.
+- [x] Added `LatestContentRequestValidator` for empty sources, unsupported
+  source kinds, bounded limits, and source-specific required fields.
+- [x] Added `ContentSourceRegistry` for adapter selection by source kind.
+- [x] Added behavior tests for validation and adapter selection.
+- [x] Verified with unit tests, e2e tests, build, and lint.
+
+### Post-Step Reassessment
+
+- No nested `AGENTS.md` update is needed; no new durable architecture rule was
+  introduced.
+- Step 3 is now clear and should compose the existing
+  `LatestContentRequestValidator`, `ContentSourceRegistry`, and
+  `ContentSourcePort` rather than redefining request contracts.
+- Step 3 should keep live provider calls out of scope by using fake adapters in
+  tests and an empty registry until Step 4 adapters exist.
+- Step 4 remains split by provider; each adapter must map external DTOs inside
+  `src/adapters/outbound/content-source/*`.
 
 ## Step 3. Latest-content use case and REST endpoint
 
 ### Clarity Check
 
-Clear and testable after Step 2 contracts exist.
+Clear and testable now that Step 2 contracts exist. This step should not add
+live provider clients.
 
 ### Red
 
@@ -389,7 +410,8 @@ Clear and testable after Step 2 contracts exist.
 - implement result merging and partial-error reporting;
 - implement `LatestContentController`;
 - use fake adapters for behavior tests;
-- register the controller and use case in `AppModule`.
+- register the controller and use case in `AppModule`;
+- wire the existing validator and registry into the use case.
 
 ### Verify
 
@@ -413,7 +435,8 @@ Too large if all providers are implemented at once. Split by adapter.
 - normalizes latest subreddit posts from fixtures;
 - handles missing optional fields;
 - bounds result count;
-- maps API/auth failures to application errors.
+- maps API/auth failures to application errors;
+- implements `ContentSourcePort` without changing the application contract.
 
 #### Green
 
