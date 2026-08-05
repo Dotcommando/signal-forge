@@ -94,6 +94,12 @@ export class LatestContentRequestValidator {
         'Hacker News sources require a query.',
       );
     }
+    if (source.fromPublishedDate && Number.isNaN(Date.parse(source.fromPublishedDate))) {
+      throw new LatestContentValidationError(
+        LATEST_CONTENT_VALIDATION_ERROR_CODE.INVALID_SOURCE_REQUEST,
+        'fromPublishedDate must be a valid date string.',
+      );
+    }
   }
 
   private validateJournalApiQuery(source: ILatestContentSourceRequest): void {

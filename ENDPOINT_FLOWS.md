@@ -516,20 +516,37 @@ the `POST /content-items/latest` contract stable.
 
 #### Progress
 
-- [ ] Not started.
+- [x] Added HN Algolia API client with injected fetch for fixture tests.
+- [x] Added HN story DTO parsing inside the outbound adapter boundary.
+- [x] Added HN content mapper to normalized `IContentItem`.
+- [x] Added `HackerNewsContentSourceAdapter` implementing `ContentSourcePort`.
+- [x] Registered the HN adapter in the existing `ContentSourceRegistry`
+  factory.
+- [x] Added HN `fromPublishedDate` validation for date filters.
+- [x] Verified with fixture-based tests, e2e tests, build, and lint.
+
+#### Post-Step Reassessment
+
+- No nested `AGENTS.md` update is needed; only the root instruction file exists.
+- Step 4c should implement Crossref first because it is a metadata API provider
+  that does not require credentials for the current fixture-tested path.
+- Step 4d should remain separate because feed parsing has different failure
+  modes than JSON metadata APIs.
+- Step 5 should wait until 4c and 4d are complete, because the current phase
+  goal includes journal API and feed sources as well as Reddit/HN.
 
 ### Step 4c. Journal API adapter
 
 #### Red
 
-- normalizes metadata article results from one initial API fixture;
+- normalizes Crossref metadata article results from fixtures;
 - preserves DOI/URL/title/authors/publication date when present;
 - rejects unsupported journal API providers;
 - maps API failures to application errors.
 
 #### Green
 
-- implement one initial journal metadata API client first;
+- implement Crossref as the first journal metadata API client;
 - use the existing provider enum values for Crossref, Europe PMC, NCBI
   E-utilities, and DOAJ;
 - keep provider DTOs inside the adapter;

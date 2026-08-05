@@ -1,8 +1,8 @@
-import { INestApplication } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
-import { App } from 'supertest/types';
 
+import { HealthController } from '../src/adapters/inbound/http/controllers/health.controller';
+import { LatestContentController } from '../src/adapters/inbound/http/controllers/latest-content.controller';
 import { ContentSourceRegistry } from '../src/adapters/outbound/content-source/content-source.registry';
 import { ILatestContentSourceRequest } from '../src/app/content-item/get-latest-content-items-request.interface';
 import { JOURNAL_API_PROVIDER } from '../src/app/content-item/journal-api-provider.enum';
@@ -14,10 +14,12 @@ import { IContentItem } from './../src/domain/content-item';
 import { IContentSourcePort } from './../src/ports/outbound/content-source/content-source.port';
 
 describe('HealthController (e2e)', () => {
-  let app: INestApplication<App>;
+  let moduleFixture: TestingModule;
+  let healthController: HealthController;
+  let latestContentController: LatestContentController;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(ContentSourceRegistry)
@@ -29,21 +31,19 @@ describe('HealthController (e2e)', () => {
       )
       .compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    healthController = moduleFixture.get<HealthController>(HealthController);
+    latestContentController = moduleFixture.get<LatestContentController>(
+      LatestContentController,
+    );
   });
 
   it('/health (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health')
-      .expect(200)
-      .expect({ status: 'ok' });
+    expect(healthController.getHealth()).toEqual({ status: 'ok' });
   });
 
-  it('/content-items/latest (POST)', () => {
-    return request(app.getHttpServer())
-      .post('/content-items/latest')
-      .send({
+  it('/content-items/latest (POST)', async () => {
+    await expect(
+      latestContentController.getLatestContentItems({
         sources: [
           {
             kind: LATEST_CONTENT_SOURCE_KIND.REDDIT_COMMUNITY,
@@ -56,9 +56,8 @@ describe('HealthController (e2e)', () => {
           },
         ],
         limitPerSource: 10,
-      })
-      .expect(200)
-      .expect({
+      }),
+    ).resolves.toEqual({
         items: [
           {
             id: 'reddit-1',
@@ -79,7 +78,7 @@ describe('HealthController (e2e)', () => {
               comments: 3,
             },
             files: [],
-            retrievedAt: '2026-07-13T08:30:00.000Z',
+            retrievedAt: new Date('2026-07-13T08:30:00.000Z'),
           },
         ],
         errors: [
@@ -92,21 +91,21 @@ describe('HealthController (e2e)', () => {
       });
   });
 
-  it('/content-items/latest (POST) rejects invalid requests', () => {
-    return request(app.getHttpServer())
-      .post('/content-items/latest')
-      .send({
+  it('/content-items/latest (POST) rejects invalid requests', async () => {
+    await expect(
+      latestContentController.getLatestContentItems({
         sources: [],
-      })
-      .expect(400)
-      .expect({
+      }),
+    ).rejects.toEqual(
+      new BadRequestException({
         code: LATEST_CONTENT_VALIDATION_ERROR_CODE.EMPTY_SOURCES,
         message: 'At least one source is required.',
-      });
+      }),
+    );
   });
 
   afterEach(async () => {
-    await app.close();
+    await moduleFixture.close();
   });
 });
 
