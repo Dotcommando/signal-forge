@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "c3c5a99f-34e8-4a0b-b2f3-signal-forge",
+    "name": "signal-forge",
+    "description": "Local checks for signal-forge health and latest-content adapters.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "HOST",
+      "value": "http://localhost",
+      "type": "string"
+    },
+    {
+      "key": "PORT",
+      "value": "3000",
+      "type": "string"
+    },
+    {
+      "key": "REDDIT_COMMUNITY",
+      "value": "psychology",
+      "type": "string"
+    },
+    {
+      "key": "HN_QUERY",
+      "value": "psychology OR mental health",
+      "type": "string"
+    },
+    {
+      "key": "LIMIT_PER_SOURCE",
+      "value": "5",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{HOST}}:{{PORT}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('health is ok', function () {",
+                  "  pm.expect(pm.response.json()).to.eql({ status: 'ok' });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Latest Content",
+      "item": [
+        {
+          "name": "POST /content-items/latest - Reddit community",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sources\": [\n    {\n      \"kind\": \"reddit-community\",\n      \"community\": \"{{REDDIT_COMMUNITY}}\",\n      \"sort\": \"new\"\n    }\n  ],\n  \"limitPerSource\": {{LIMIT_PER_SOURCE}}\n}"
+            },
+            "url": "{{HOST}}:{{PORT}}/content-items/latest"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('response has items and errors arrays', function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.items).to.be.an('array');",
+                  "  pm.expect(json.errors).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /content-items/latest - Hacker News query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sources\": [\n    {\n      \"kind\": \"hacker-news-query\",\n      \"query\": \"{{HN_QUERY}}\"\n    }\n  ],\n  \"limitPerSource\": {{LIMIT_PER_SOURCE}}\n}"
+            },
+            "url": "{{HOST}}:{{PORT}}/content-items/latest"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('response has items and errors arrays', function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.items).to.be.an('array');",
+                  "  pm.expect(json.errors).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /content-items/latest - Reddit + Hacker News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sources\": [\n    {\n      \"kind\": \"reddit-community\",\n      \"community\": \"{{REDDIT_COMMUNITY}}\",\n      \"sort\": \"new\"\n    },\n    {\n      \"kind\": \"hacker-news-query\",\n      \"query\": \"{{HN_QUERY}}\"\n    }\n  ],\n  \"limitPerSource\": {{LIMIT_PER_SOURCE}}\n}"
+            },
+            "url": "{{HOST}}:{{PORT}}/content-items/latest"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('response has items and errors arrays', function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.items).to.be.an('array');",
+                  "  pm.expect(json.errors).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /content-items/latest - Invalid empty sources",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sources\": []\n}"
+            },
+            "url": "{{HOST}}:{{PORT}}/content-items/latest"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('validation error code is EMPTY_SOURCES', function () {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.code).to.eql('EMPTY_SOURCES');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
