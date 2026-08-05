@@ -255,7 +255,17 @@ Small, clear, and testable. No provider API calls.
 
 ### Progress
 
-- [ ] Not started.
+- [x] Completed.
+
+Implemented provider-independent comments request/result contracts, comment
+error and validation enums, sort enums, `CommentSourcePort`,
+`CommentSourceRegistry`, `LatestCommentRequestValidator`, and
+`CommentScorePercentileFilter`.
+
+Verification completed:
+
+- validation and percentile unit tests pass;
+- full build, lint, and test suite pass.
 
 ## Step 2. Reddit Flat Comments Adapter
 
@@ -263,6 +273,10 @@ Small, clear, and testable. No provider API calls.
 
 Small enough if limited to Reddit API comments, DTO parsing, flattening, and
 mapping. No REST controller in this step.
+
+Use the Step 1 `IValidatedLatestCommentsRequest`, `ICommentSourcePort`, and
+`LATEST_COMMENT_SOURCE_KIND.REDDIT_COMMUNITY` contracts. Keep depth, limit, and
+source reference parsing inside the Reddit outbound adapter boundary.
 
 ### Red
 
@@ -299,6 +313,11 @@ mapping. No REST controller in this step.
 Clear and testable after Steps 1 and 2. This step wires the application flow and
 updates the endpoint artifact required by `AGENTS.md`.
 
+Use the Step 1 validator, percentile filter, registry, response metadata shape,
+and error enums. Keep score-filter capability checks in the use-case/controller
+mapping path so Hacker News can return the explicit 422 unsupported-capability
+response.
+
 ### Red
 
 - `POST /comments/latest` delegates to the comments use case;
@@ -334,6 +353,9 @@ updates the endpoint artifact required by `AGENTS.md`.
 After flat comment retrieval is implemented and verified, decide whether the
 next phase should add persistence, branch reconstruction, source configuration,
 MCP exposure, or scheduled discovery.
+
+No change yet. Reassess after Step 3 proves the endpoint behavior and Postman
+artifact.
 
 ### Progress
 
