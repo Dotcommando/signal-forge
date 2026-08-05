@@ -39,6 +39,11 @@ phase work.
 When adding, removing, renaming, or changing REST endpoints, update
 `postman/signal-forge.postman_collection.json` in the same change.
 
+When a plan step uses TDD, keep tests meaningful and minimal. Do not add tests
+only to exercise implementation structure, enum member lists, or barrel-file
+exports. Cover the behavior most likely to break: the main positive scenario,
+the few most likely negative scenarios, and important edge cases.
+
 ## Constants And Enums
 
 When a field has a closed set of string values, define an enum instead
