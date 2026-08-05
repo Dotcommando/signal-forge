@@ -479,6 +479,8 @@ the `POST /content-items/latest` contract stable.
 - [x] Registered the Reddit adapter in the existing `ContentSourceRegistry`
   factory.
 - [x] Added `.env` and `.env.example` Reddit OAuth placeholders.
+- [x] Added `@nestjs/config` loading so `.env` is available through
+  `ConfigService`.
 - [x] Verified with fixture-based tests, e2e tests, build, and lint.
 
 #### Post-Step Reassessment

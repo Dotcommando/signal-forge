@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { HealthController } from './adapters/inbound/http/controllers/health.controller';
 import { LatestContentController } from './adapters/inbound/http/controllers/latest-content.controller';
@@ -14,7 +15,11 @@ import { LatestContentRequestValidator } from './app/content-item/latest-content
 import { GetHealthUseCase } from './app/health/get-health.use-case';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
   controllers: [HealthController, LatestContentController],
   providers: [
     GetHealthUseCase,
@@ -22,13 +27,13 @@ import { GetHealthUseCase } from './app/health/get-health.use-case';
     LatestContentRequestValidator,
     {
       provide: ContentSourceRegistry,
-      useFactory: () =>
+      useFactory: (configService: ConfigService) =>
         new ContentSourceRegistry([
           new RedditContentSourceAdapter(
             new RedditApiClient({
-              clientId: process.env.REDDIT_CLIENT_ID ?? '',
-              clientSecret: process.env.REDDIT_CLIENT_SECRET ?? '',
-              userAgent: process.env.REDDIT_USER_AGENT ?? 'signal-forge/0.1.0',
+              clientId: configService.get<string>('REDDIT_CLIENT_ID') ?? '',
+              clientSecret: configService.get<string>('REDDIT_CLIENT_SECRET') ?? '',
+              userAgent: configService.get<string>('REDDIT_USER_AGENT') ?? 'signal-forge/0.1.0',
             }),
             new RedditContentMapper(),
           ),
@@ -37,6 +42,7 @@ import { GetHealthUseCase } from './app/health/get-health.use-case';
             new HackerNewsContentMapper(),
           ),
         ]),
+      inject: [ConfigService],
     },
   ],
 })
