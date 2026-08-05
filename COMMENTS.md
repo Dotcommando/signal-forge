@@ -22,15 +22,72 @@ reddit
 
 hacker-news
   - Keep Hacker News as a latest-content source.
-  - Return an explicit unsupported-capability error for comment percentile
-    filtering until a legal HN API path with per-comment score/upvote metrics is
-    selected.
+  - Depth and publication-date filters must work when HN comments are fetched.
+  - Return an explicit unsupported-capability error when score-based filters are
+    requested, unless a legal HN API path with per-comment score/upvote metrics
+    is selected.
 ```
 
 Do not add journal, RSS, Crossref, Europe PMC, NCBI, DOAJ, or other source
 adapters in this plan.
 
 The comments response is flat. Do not reconstruct branches in this phase.
+
+## Query Policy
+
+All comment sources must support:
+
+```txt
+minDepth
+maxDepth
+publishedFrom
+publishedTo
+limit
+```
+
+`publishedFrom` and `publishedTo` are optional. Either side of the date range may
+be open.
+
+Score-based filters:
+
+```txt
+scorePercentile
+minScore
+```
+
+are allowed only for sources that expose per-comment score/upvote metrics.
+Reddit supports these filters. Hacker News must return an explicit
+unsupported-capability error when either score filter is requested.
+
+Do not add `offset` in this phase. Live external comments can change between
+requests, and offset pagination would produce unstable pages unless the service
+stores a snapshot or cursor state. The current goal is fast retrieval of
+interesting data, so the endpoint returns one bounded, ranked response.
+
+Default response policy:
+
+```txt
+limit
+  - default: 50
+  - maximum: 200
+sort.by
+  - default: score when score metrics are available
+  - fallback: publishedAt
+sort.direction
+  - default: desc
+includeUnavailable
+  - default: false
+```
+
+The response must include metadata so MCP callers can understand truncation:
+
+```txt
+retrievedAt
+totalFetched
+totalMatched
+returned
+truncated
+```
 
 ## Endpoint
 
@@ -47,8 +104,20 @@ Request shape:
     "externalId": "t3_abc123",
     "url": "https://www.reddit.com/r/psychology/comments/abc123/example/"
   },
-  "scorePercentile": 80,
-  "limit": 500
+  "filters": {
+    "minDepth": 0,
+    "maxDepth": 5,
+    "publishedFrom": null,
+    "publishedTo": null,
+    "scorePercentile": 80,
+    "minScore": 5,
+    "includeUnavailable": false
+  },
+  "sort": {
+    "by": "score",
+    "direction": "desc"
+  },
+  "limit": 50
 }
 ```
 
@@ -82,8 +151,35 @@ Response shape:
       "retrievedAt": "2026-08-05T10:05:00.000Z"
     }
   ],
+  "meta": {
+    "retrievedAt": "2026-08-05T10:05:00.000Z",
+    "totalFetched": 438,
+    "totalMatched": 72,
+    "returned": 50,
+    "truncated": true
+  },
   "errors": []
 }
+```
+
+Hacker News score-filter error shape:
+
+```json
+{
+  "code": "COMMENT_SCORE_FILTER_UNSUPPORTED",
+  "message": "Score percentile filtering is not available for Hacker News comments."
+}
+```
+
+HTTP mapping:
+
+```txt
+400
+  - syntactically invalid request;
+  - invalid bounds such as negative depth or limit above maximum.
+422
+  - request is syntactically valid, but the requested filter is unsupported by
+    the selected source.
 ```
 
 ## Lagent Reuse Audit
@@ -136,6 +232,8 @@ Small, clear, and testable. No provider API calls.
 - unsupported source kinds are rejected before adapter execution;
 - `scorePercentile` is bounded from 0 to 100;
 - `limit` is bounded;
+- `minDepth` and `maxDepth` are bounded and may be open;
+- `publishedFrom` and `publishedTo` are valid optional date range ends;
 - percentile threshold is deterministic for odd, even, empty, and tied inputs;
 - comments without score metrics are excluded or reported according to request
   policy.
@@ -144,6 +242,7 @@ Small, clear, and testable. No provider API calls.
 
 - define provider-independent comments request and response interfaces;
 - define comment error codes as enums;
+- define sort field and sort direction enums;
 - define `CommentSourcePort.fetchLatestComments()`;
 - add `CommentSourceRegistry`;
 - implement `LatestCommentRequestValidator`;
@@ -204,9 +303,11 @@ updates the endpoint artifact required by `AGENTS.md`.
 
 - `POST /comments/latest` delegates to the comments use case;
 - Reddit comments are returned flat after percentile filtering;
-- Hacker News comment percentile requests return an explicit unsupported
-  capability error while per-comment score metrics are unavailable;
+- depth and publication-date filters work for every implemented comment source;
+- Hacker News score-filter requests return `COMMENT_SCORE_FILTER_UNSUPPORTED`;
 - invalid requests map to stable HTTP 400 responses;
+- unsupported source/filter capability maps to HTTP 422;
+- response metadata reports fetched, matched, returned, and truncated counts;
 - `postman/signal-forge.postman_collection.json` contains `POST /comments/latest`.
 
 ### Green
@@ -215,6 +316,7 @@ updates the endpoint artifact required by `AGENTS.md`.
 - implement `LatestCommentController`;
 - wire validator, percentile filter, and comment registry in `AppModule`;
 - add Hacker News unsupported-capability behavior for comments;
+- do not add offset pagination;
 - update the Postman collection.
 
 ### Verify
