@@ -6,6 +6,10 @@ user, such as `GENERAL_PLAN.md`.
 The active task file should contain the task description, decomposition,
 Red/Green/Verify notes, and implementation progress.
 
+When composing or revising a plan, prefer the minimum number of steps that still
+gives useful control. Split steps that are too large, ambiguous, or hard to
+verify; merge steps that are too small to deliver meaningful behavior.
+
 Before starting any step:
 
 ``` txt
@@ -31,6 +35,9 @@ After each completed step:
 
 Do not let the task file become stale. It is the local map for current
 phase work.
+
+When adding, removing, renaming, or changing REST endpoints, update
+`postman/signal-forge.postman_collection.json` in the same change.
 
 ## Constants And Enums
 

@@ -2,26 +2,31 @@
 
 ## Goal
 
-Build `signal-forge` as a reusable multi-source content ingestion service.
+Build `signal-forge` as a focused Reddit and Hacker News content ingestion
+service for the current product phase.
+
+Do not add journal, RSS, or other source adapters until the plan is explicitly
+reopened.
 
 The first complete workflow:
 
 ```txt
-Reddit source
-  -> discovery
-  -> normalized persistence
-  -> percentile selection
-  -> selected discussion branches
-  -> MCP candidate retrieval
-  -> processing feedback
+Reddit or Hacker News source
+  -> latest content fetch
+  -> normalized content response
+  -> flat comment retrieval where the source exposes comment scores
+  -> request-time percentile filtering by comment score/upvotes
 ```
 
 Architecture and coding rules are defined in `AGENTS.md` and must not be duplicated here.
+
+Detailed flat comment retrieval planning is tracked in `COMMENTS.md`.
 
 ## Plan Rules
 
 - Use TDD for every behavior change.
 - Each step must be independently testable and deliver meaningful behavior.
+- Prefer the minimum number of steps that still gives useful control.
 - Split a step before implementation if it becomes too large.
 - Merge it with an adjacent step if it becomes too small to produce useful behavior.
 - Update this plan after every completed step.
@@ -233,9 +238,9 @@ Integration-test:
 
 ---
 
-## Step 7. Discussion and metric-snapshot persistence
+## Step 7. Flat comment and metric-snapshot persistence
 
-Store normalized discussion branches and historical metric snapshots.
+Store normalized flat comments and historical metric snapshots.
 
 ### Red
 
@@ -245,16 +250,16 @@ Test:
 - duplicate nodes are not created;
 - metric snapshots are append-only;
 - snapshots are returned chronologically;
-- discussions are linked to the correct root content item.
+- comments are linked to the correct root content item.
 
 ### Green
 
-- implement discussion and snapshot repositories;
+- implement flat comment and snapshot repositories;
 - add required indexes.
 
 ### Definition of Done
 
-- [ ] Discussion context can be stored and retrieved.
+- [ ] Flat comment context can be stored and retrieved.
 - [ ] Metric history is preserved.
 - [ ] Duplicate ingestion is deterministic.
 - [ ] Build, lint, and tests pass.
@@ -292,39 +297,45 @@ Fixture-test:
 
 ---
 
-## Step 9. Reddit discussion adapter
+## Step 9. Flat comment retrieval adapter
 
-Retrieve and normalize Reddit comment trees.
+Retrieve and normalize flat comments for supported sources.
+
+Reddit is the first comment source because Reddit exposes comment score metrics.
+Hacker News comment retrieval must explicitly report unsupported percentile
+score filtering unless a legal API path exposes per-comment scores.
 
 ### Red
 
 Test:
 
-- nested-comment mapping;
+- nested comments are flattened;
 - parent paths;
 - deleted authors;
 - deferred comment groups;
 - retained metrics and identifiers;
 - malformed cycles;
-- context reconstruction for selected comments.
+- explicit unsupported-capability behavior for sources without comment scores.
 
 ### Green
 
-- implement comment retrieval and normalization;
-- preserve enough context for later branch selection.
+- implement flat comment retrieval and normalization;
+- preserve parent identifiers and depth;
+- keep provider DTOs inside outbound adapters.
 
 ### Definition of Done
 
-- [ ] Reddit discussions are normalized.
-- [ ] Parent context is preserved.
-- [ ] Deferred groups are handled or explicitly reported.
+- [ ] Supported-source comments are normalized and returned flat.
+- [ ] Parent context and depth are preserved.
+- [ ] Deferred groups and unsupported score capabilities are handled explicitly.
 - [ ] Build, lint, and tests pass.
 
 ---
 
-## Step 10. Percentile selection
+## Step 10. Flat comment percentile filtering
 
-Implement source-independent percentile and absolute-threshold selection.
+Implement source-independent percentile and absolute-threshold filtering for
+flat comments.
 
 ### Red
 
@@ -336,19 +347,21 @@ Test:
 - empty and single-item inputs;
 - minimum absolute thresholds;
 - combined percentile and absolute rules;
-- reconstruction of complete comment branches.
+- comments missing score metrics are excluded or reported according to request
+  policy.
 
 ### Green
 
 - implement percentile calculation;
-- implement post selection;
-- implement comment selection and branch reconstruction.
+- implement flat comment selection;
+- keep branch reconstruction out of this phase.
 
 ### Definition of Done
 
-- [ ] Post and comment selection are configurable.
+- [ ] Flat comment selection is configurable.
 - [ ] Calculations are deterministic.
-- [ ] Selected branches contain required context.
+- [ ] Selected comments preserve source, parent, depth, author, text, and score
+  context.
 - [ ] Build, lint, and tests pass.
 
 ---
@@ -482,7 +495,7 @@ Initial tools:
 - run discovery;
 - get new candidates;
 - get candidate details;
-- get selected discussion branches;
+- get percentile-filtered flat comments;
 - claim a candidate;
 - submit an outcome or feedback.
 
@@ -576,7 +589,7 @@ Smoke-test or verify:
 
 ---
 
-## Step 18. End-to-end Reddit workflow
+## Step 18. End-to-end Reddit and Hacker News workflow
 
 Verify the complete first workflow:
 
@@ -585,7 +598,7 @@ configured source
   -> discovery
   -> persistence
   -> percentile selection
-  -> discussion branches
+  -> percentile-filtered flat comments
   -> MCP candidate
   -> claim
   -> feedback
@@ -605,7 +618,7 @@ Create a deterministic end-to-end test or test harness using fixtures.
 
 - [ ] The workflow succeeds from a clean environment.
 - [ ] Repeated discovery does not duplicate data.
-- [ ] Selected branches preserve context.
+- [ ] Selected flat comments preserve context.
 - [ ] MCP responses are concise and usable by Hermes.
 - [ ] Feedback is persisted.
 - [ ] Build, lint, and tests pass.
@@ -621,7 +634,7 @@ Create a deterministic end-to-end test or test harness using fixtures.
 - article generation;
 - automatic publishing;
 - Telegram interaction;
-- additional source adapters;
+- source adapters beyond Reddit and Hacker News;
 - distributed queues;
 - Kubernetes;
 - multi-tenancy;
