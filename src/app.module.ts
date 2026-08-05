@@ -3,13 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { HealthController } from './adapters/inbound/http/controllers/health.controller';
 import { LatestContentController } from './adapters/inbound/http/controllers/latest-content.controller';
-import { ContentSourceRegistry } from './adapters/outbound/content-source/content-source.registry';
 import { HackerNewsApiClient } from './adapters/outbound/content-source/hacker-news/hacker-news-api.client';
 import { HackerNewsContentMapper } from './adapters/outbound/content-source/hacker-news/hacker-news-content.mapper';
 import { HackerNewsContentSourceAdapter } from './adapters/outbound/content-source/hacker-news/hacker-news-content-source.adapter';
 import { RedditApiClient } from './adapters/outbound/content-source/reddit/reddit-api.client';
 import { RedditContentMapper } from './adapters/outbound/content-source/reddit/reddit-content.mapper';
 import { RedditContentSourceAdapter } from './adapters/outbound/content-source/reddit/reddit-content-source.adapter';
+import { ContentSourceRegistry } from './app/content-item/content-source.registry';
 import { GetLatestContentItemsUseCase } from './app/content-item/get-latest-content-items.use-case';
 import { LatestContentRequestValidator } from './app/content-item/latest-content-request-validator';
 import { GetHealthUseCase } from './app/health/get-health.use-case';

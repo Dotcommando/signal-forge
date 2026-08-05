@@ -262,6 +262,14 @@ error and validation enums, sort enums, `CommentSourcePort`,
 `CommentSourceRegistry`, `LatestCommentRequestValidator`, and
 `CommentScorePercentileFilter`.
 
+Follow-up architecture correction:
+
+- moved outbound source request contracts and source/sort/provider enums into
+  `src/ports/outbound`;
+- moved content/comment source registries into `src/app` so use cases do not
+  depend on adapter modules;
+- kept app enum files as compatibility re-exports of port-owned enums.
+
 Verification completed:
 
 - validation and percentile unit tests pass;
@@ -277,6 +285,9 @@ mapping. No REST controller in this step.
 Use the Step 1 `IValidatedLatestCommentsRequest`, `ICommentSourcePort`, and
 `LATEST_COMMENT_SOURCE_KIND.REDDIT_COMMUNITY` contracts. Keep depth, limit, and
 source reference parsing inside the Reddit outbound adapter boundary.
+
+Import Reddit comment adapter request enums and interfaces from
+`src/ports/outbound/comment-source`, not from `src/app/comment`.
 
 ### Red
 
@@ -317,6 +328,10 @@ Use the Step 1 validator, percentile filter, registry, response metadata shape,
 and error enums. Keep score-filter capability checks in the use-case/controller
 mapping path so Hacker News can return the explicit 422 unsupported-capability
 response.
+
+Wire `CommentSourceRegistry` from `src/app/comment` in `AppModule`; outbound
+source adapters should import source request enums and interfaces from
+`src/ports/outbound`, not from `src/app`.
 
 ### Red
 

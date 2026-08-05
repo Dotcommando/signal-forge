@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { ILatestContentSourceRequest } from '../../../../app/content-item/get-latest-content-items-request.interface';
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/latest-content-source-kind.enum';
 import { IContentItem } from '../../../../domain/content-item';
 import { IContentSourcePort } from '../../../../ports/outbound/content-source/content-source.port';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../../../ports/outbound/content-source/latest-content-source-kind.enum';
+import { ILatestContentSourceRequest } from '../../../../ports/outbound/content-source/latest-content-source-request.interface';
 import { HackerNewsApiError } from './hacker-news-api-error';
 import { HackerNewsContentMapper } from './hacker-news-content.mapper';
 import { IHackerNewsStoryDto } from './hacker-news-story-dto.interface';

@@ -1,8 +1,8 @@
-import { ContentSourceRegistry } from '../../adapters/outbound/content-source/content-source.registry';
 import { IContentItem } from '../../domain/content-item';
 import { IContentSourcePort } from '../../ports/outbound/content-source/content-source.port';
+import { ILatestContentSourceRequest } from '../../ports/outbound/content-source/latest-content-source-request.interface';
+import { ContentSourceRegistry } from './content-source.registry';
 import { GetLatestContentItemsUseCase } from './get-latest-content-items.use-case';
-import { ILatestContentSourceRequest } from './get-latest-content-items-request.interface';
 import { JOURNAL_API_PROVIDER } from './journal-api-provider.enum';
 import { LATEST_CONTENT_ERROR_CODE } from './latest-content-error-code.enum';
 import { LatestContentRequestValidator } from './latest-content-request-validator';

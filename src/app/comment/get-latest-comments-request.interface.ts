@@ -1,12 +1,8 @@
-import { LATEST_COMMENT_SORT_DIRECTION } from './latest-comment-sort-direction.enum';
-import { LATEST_COMMENT_SORT_FIELD } from './latest-comment-sort-field.enum';
-import { LATEST_COMMENT_SOURCE_KIND } from './latest-comment-source-kind.enum';
+import { LATEST_COMMENT_SORT_DIRECTION } from '../../ports/outbound/comment-source/latest-comment-sort-direction.enum';
+import { LATEST_COMMENT_SORT_FIELD } from '../../ports/outbound/comment-source/latest-comment-sort-field.enum';
+import { ILatestCommentSourceRequest } from '../../ports/outbound/comment-source/latest-comment-source-request.interface';
 
-export interface ILatestCommentSourceRequest {
-  kind: LATEST_COMMENT_SOURCE_KIND;
-  externalId?: string;
-  url?: string;
-}
+export type { ILatestCommentSourceRequest } from '../../ports/outbound/comment-source/latest-comment-source-request.interface';
 
 export interface ILatestCommentFiltersRequest {
   minDepth?: number | null;

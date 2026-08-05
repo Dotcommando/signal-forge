@@ -1,4 +1,4 @@
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/latest-content-source-kind.enum';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../../../ports/outbound/content-source/latest-content-source-kind.enum';
 import { HackerNewsApiError } from './hacker-news-api-error';
 import { HackerNewsContentMapper } from './hacker-news-content.mapper';
 import { HackerNewsContentSourceAdapter } from './hacker-news-content-source.adapter';

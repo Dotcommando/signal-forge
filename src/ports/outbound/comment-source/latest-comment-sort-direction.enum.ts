@@ -1,0 +1,8 @@
+export enum LATEST_COMMENT_SORT_DIRECTION {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export const LATEST_COMMENT_SORT_DIRECTION_ARRAY = Object.values(
+  LATEST_COMMENT_SORT_DIRECTION,
+);

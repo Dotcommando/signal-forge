@@ -1,9 +1,10 @@
-import { IValidatedLatestCommentsRequest } from '../../../app/comment/get-latest-comments-request.interface';
 import { IComment } from '../../../domain/comment';
+import { ICommentSourceFetchRequest } from './comment-source-fetch-request.interface';
+import { ILatestCommentSourceRequest } from './latest-comment-source-request.interface';
 
 export interface ICommentSourcePort {
-  supports(source: IValidatedLatestCommentsRequest['source']): boolean;
+  supports(source: ILatestCommentSourceRequest): boolean;
   fetchLatestComments(
-    request: IValidatedLatestCommentsRequest,
+    request: ICommentSourceFetchRequest,
   ): Promise<IComment[]>;
 }

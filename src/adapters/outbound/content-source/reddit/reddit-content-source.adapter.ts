@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { ILatestContentSourceRequest } from '../../../../app/content-item/get-latest-content-items-request.interface';
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/latest-content-source-kind.enum';
-import { REDDIT_COMMUNITY_SORT } from '../../../../app/content-item/reddit-community-sort.enum';
 import { IContentItem } from '../../../../domain/content-item';
 import { IContentSourcePort } from '../../../../ports/outbound/content-source/content-source.port';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../../../ports/outbound/content-source/latest-content-source-kind.enum';
+import { ILatestContentSourceRequest } from '../../../../ports/outbound/content-source/latest-content-source-request.interface';
+import { REDDIT_COMMUNITY_SORT } from '../../../../ports/outbound/content-source/reddit-community-sort.enum';
 import { RedditApiError } from './reddit-api-error';
 import { RedditContentMapper } from './reddit-content.mapper';
 import { IRedditPostDto } from './reddit-post-dto.interface';

@@ -1,10 +1,4 @@
-export enum REDDIT_COMMUNITY_SORT {
-  HOT = 'hot',
-  NEW = 'new',
-  RISING = 'rising',
-  TOP = 'top',
-}
-
-export const REDDIT_COMMUNITY_SORT_ARRAY = Object.values(
+export {
   REDDIT_COMMUNITY_SORT,
-);
+  REDDIT_COMMUNITY_SORT_ARRAY,
+} from '../../ports/outbound/content-source/reddit-community-sort.enum';

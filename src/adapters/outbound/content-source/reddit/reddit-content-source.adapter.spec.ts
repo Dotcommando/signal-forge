@@ -1,5 +1,5 @@
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/latest-content-source-kind.enum';
-import { REDDIT_COMMUNITY_SORT } from '../../../../app/content-item/reddit-community-sort.enum';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../../../ports/outbound/content-source/latest-content-source-kind.enum';
+import { REDDIT_COMMUNITY_SORT } from '../../../../ports/outbound/content-source/reddit-community-sort.enum';
 import { RedditApiClient } from './reddit-api.client';
 import { RedditApiError } from './reddit-api-error';
 import { RedditContentMapper } from './reddit-content.mapper';

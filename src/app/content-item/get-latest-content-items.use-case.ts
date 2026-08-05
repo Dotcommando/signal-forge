@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { ContentSourceRegistry } from '../../adapters/outbound/content-source/content-source.registry';
 import { IContentItem } from '../../domain/content-item';
+import { ContentSourceRegistry } from './content-source.registry';
 import { IGetLatestContentItemsRequest } from './get-latest-content-items-request.interface';
 import { IGetLatestContentItemsResult, ILatestContentSourceError } from './get-latest-content-items-result.interface';
 import { LATEST_CONTENT_ERROR_CODE } from './latest-content-error-code.enum';

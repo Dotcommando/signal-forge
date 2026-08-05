@@ -1,9 +1,9 @@
-import { ILatestContentSourceRequest } from '../../../app/content-item/get-latest-content-items-request.interface';
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../app/content-item/latest-content-source-kind.enum';
-import { LatestContentValidationError } from '../../../app/content-item/latest-content-validation-error';
-import { LATEST_CONTENT_VALIDATION_ERROR_CODE } from '../../../app/content-item/latest-content-validation-error-code.enum';
-import { IContentSourcePort } from '../../../ports/outbound/content-source/content-source.port';
+import { IContentSourcePort } from '../../ports/outbound/content-source/content-source.port';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../ports/outbound/content-source/latest-content-source-kind.enum';
+import { ILatestContentSourceRequest } from '../../ports/outbound/content-source/latest-content-source-request.interface';
 import { ContentSourceRegistry } from './content-source.registry';
+import { LatestContentValidationError } from './latest-content-validation-error';
+import { LATEST_CONTENT_VALIDATION_ERROR_CODE } from './latest-content-validation-error-code.enum';
 
 class FakeContentSourceAdapter implements IContentSourcePort {
   public fetchCalls = 0;

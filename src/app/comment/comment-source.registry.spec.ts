@@ -1,9 +1,9 @@
-import { ILatestCommentSourceRequest } from '../../../app/comment/get-latest-comments-request.interface';
-import { LATEST_COMMENT_SOURCE_KIND } from '../../../app/comment/latest-comment-source-kind.enum';
-import { LatestCommentValidationError } from '../../../app/comment/latest-comment-validation-error';
-import { LATEST_COMMENT_VALIDATION_ERROR_CODE } from '../../../app/comment/latest-comment-validation-error-code.enum';
-import { ICommentSourcePort } from '../../../ports/outbound/comment-source/comment-source.port';
+import { ICommentSourcePort } from '../../ports/outbound/comment-source/comment-source.port';
+import { LATEST_COMMENT_SOURCE_KIND } from '../../ports/outbound/comment-source/latest-comment-source-kind.enum';
+import { ILatestCommentSourceRequest } from '../../ports/outbound/comment-source/latest-comment-source-request.interface';
 import { CommentSourceRegistry } from './comment-source.registry';
+import { LatestCommentValidationError } from './latest-comment-validation-error';
+import { LATEST_COMMENT_VALIDATION_ERROR_CODE } from './latest-comment-validation-error-code.enum';
 
 class FakeCommentSourceAdapter implements ICommentSourcePort {
   public fetchCalls = 0;

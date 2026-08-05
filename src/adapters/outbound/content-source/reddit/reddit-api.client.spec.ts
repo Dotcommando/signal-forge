@@ -1,4 +1,4 @@
-import { REDDIT_COMMUNITY_SORT } from '../../../../app/content-item/reddit-community-sort.enum';
+import { REDDIT_COMMUNITY_SORT } from '../../../../ports/outbound/content-source/reddit-community-sort.enum';
 import { RedditApiClient } from './reddit-api.client';
 import { RedditApiError } from './reddit-api-error';
 

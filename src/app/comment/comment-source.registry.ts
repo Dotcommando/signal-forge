@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { ILatestCommentSourceRequest } from '../../../app/comment/get-latest-comments-request.interface';
-import { LatestCommentValidationError } from '../../../app/comment/latest-comment-validation-error';
-import { LATEST_COMMENT_VALIDATION_ERROR_CODE } from '../../../app/comment/latest-comment-validation-error-code.enum';
-import { ICommentSourcePort } from '../../../ports/outbound/comment-source/comment-source.port';
+import { ICommentSourcePort } from '../../ports/outbound/comment-source/comment-source.port';
+import { ILatestCommentSourceRequest } from '../../ports/outbound/comment-source/latest-comment-source-request.interface';
+import { LatestCommentValidationError } from './latest-comment-validation-error';
+import { LATEST_COMMENT_VALIDATION_ERROR_CODE } from './latest-comment-validation-error-code.enum';
 
 @Injectable()
 export class CommentSourceRegistry {
