@@ -472,7 +472,25 @@ the `POST /content-items/latest` contract stable.
 
 #### Progress
 
-- [ ] Not started.
+- [x] Added Reddit OAuth API client with injected fetch for fixture tests.
+- [x] Added Reddit post DTO parsing inside the outbound adapter boundary.
+- [x] Added Reddit content mapper to normalized `IContentItem`.
+- [x] Added `RedditContentSourceAdapter` implementing `ContentSourcePort`.
+- [x] Registered the Reddit adapter in the existing `ContentSourceRegistry`
+  factory.
+- [x] Added `.env` and `.env.example` Reddit OAuth placeholders.
+- [x] Verified with fixture-based tests, e2e tests, build, and lint.
+
+#### Post-Step Reassessment
+
+- No nested `AGENTS.md` update is needed; only the root instruction file exists.
+- Step 4b should follow the same pattern: injected fetch client, provider DTOs
+  scoped to `src/adapters/outbound/content-source/hacker-news`, and no live API
+  calls in tests.
+- Step 4c should still start with one journal API provider instead of all
+  supported enum values.
+- Step 4d remains independent because RSS/Atom parsing will likely require a
+  structured parser dependency or a deliberately small parser decision.
 
 ### Step 4b. Hacker News query adapter
 
@@ -481,7 +499,8 @@ the `POST /content-items/latest` contract stable.
 - normalizes HN Algolia story results from fixtures;
 - supports query/date filters;
 - bounds result count;
-- maps API failures to application errors.
+- maps API failures to application errors;
+- implements `ContentSourcePort` without changing the application contract.
 
 #### Green
 

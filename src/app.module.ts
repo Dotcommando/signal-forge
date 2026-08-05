@@ -3,6 +3,9 @@ import { Module } from '@nestjs/common';
 import { HealthController } from './adapters/inbound/http/controllers/health.controller';
 import { LatestContentController } from './adapters/inbound/http/controllers/latest-content.controller';
 import { ContentSourceRegistry } from './adapters/outbound/content-source/content-source.registry';
+import { RedditApiClient } from './adapters/outbound/content-source/reddit/reddit-api.client';
+import { RedditContentMapper } from './adapters/outbound/content-source/reddit/reddit-content.mapper';
+import { RedditContentSourceAdapter } from './adapters/outbound/content-source/reddit/reddit-content-source.adapter';
 import { GetLatestContentItemsUseCase } from './app/content-item/get-latest-content-items.use-case';
 import { LatestContentRequestValidator } from './app/content-item/latest-content-request-validator';
 import { GetHealthUseCase } from './app/health/get-health.use-case';
@@ -16,7 +19,17 @@ import { GetHealthUseCase } from './app/health/get-health.use-case';
     LatestContentRequestValidator,
     {
       provide: ContentSourceRegistry,
-      useFactory: () => new ContentSourceRegistry([]),
+      useFactory: () =>
+        new ContentSourceRegistry([
+          new RedditContentSourceAdapter(
+            new RedditApiClient({
+              clientId: process.env.REDDIT_CLIENT_ID ?? '',
+              clientSecret: process.env.REDDIT_CLIENT_SECRET ?? '',
+              userAgent: process.env.REDDIT_USER_AGENT ?? 'signal-forge/0.1.0',
+            }),
+            new RedditContentMapper(),
+          ),
+        ]),
     },
   ],
 })
