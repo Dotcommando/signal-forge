@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { GetHealthUseCase } from '../../../../app/health/get-health.use-case';
+import { GetHealthUseCase } from '../../../../app/health/use-cases/get-health.use-case';
 import { HealthController } from './health.controller';
 
 describe('HealthController', () => {

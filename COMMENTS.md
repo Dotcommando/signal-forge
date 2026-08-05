@@ -92,7 +92,7 @@ truncated
 ## Endpoint
 
 ```txt
-POST /comments/latest
+POST /comments/query
 ```
 
 Request shape:
@@ -243,9 +243,9 @@ Small, clear, and testable. No provider API calls.
 - define provider-independent comments request and response interfaces;
 - define comment error codes as enums;
 - define sort field and sort direction enums;
-- define `CommentSourcePort.fetchLatestComments()`;
+- define `CommentSourcePort.fetchComments()`;
 - add `CommentSourceRegistry`;
-- implement `LatestCommentRequestValidator`;
+- implement `CommentRequestValidator`;
 - implement `CommentScorePercentileFilter` for flat comments.
 
 ### Verify
@@ -259,7 +259,7 @@ Small, clear, and testable. No provider API calls.
 
 Implemented provider-independent comments request/result contracts, comment
 error and validation enums, sort enums, `CommentSourcePort`,
-`CommentSourceRegistry`, `LatestCommentRequestValidator`, and
+`CommentSourceRegistry`, `CommentRequestValidator`, and
 `CommentScorePercentileFilter`.
 
 Follow-up architecture correction:
@@ -269,6 +269,16 @@ Follow-up architecture correction:
 - moved content/comment source registries into `src/app` so use cases do not
   depend on adapter modules;
 - kept app enum files as compatibility re-exports of port-owned enums.
+
+App structure correction:
+
+- moved app-level enums, interfaces, and errors into `types` folders;
+- moved app registries, validators, and filters into `services` folders with
+  `.service.ts` filenames;
+- moved use cases into sibling `use-cases` folders with `.use-case.ts`
+  filenames;
+- removed `latest` from comment app and comment port names because comment
+  retrieval supports bounded date ranges, not only latest comments.
 
 Verification completed:
 
@@ -282,8 +292,8 @@ Verification completed:
 Small enough if limited to Reddit API comments, DTO parsing, flattening, and
 mapping. No REST controller in this step.
 
-Use the Step 1 `IValidatedLatestCommentsRequest`, `ICommentSourcePort`, and
-`LATEST_COMMENT_SOURCE_KIND.REDDIT_COMMUNITY` contracts. Keep depth, limit, and
+Use the Step 1 `IValidatedCommentsRequest`, `ICommentSourcePort`, and
+`COMMENT_SOURCE_KIND.REDDIT_COMMUNITY` contracts. Keep depth, limit, and
 source reference parsing inside the Reddit outbound adapter boundary.
 
 Import Reddit comment adapter request enums and interfaces from
@@ -324,30 +334,31 @@ Import Reddit comment adapter request enums and interfaces from
 Clear and testable after Steps 1 and 2. This step wires the application flow and
 updates the endpoint artifact required by `AGENTS.md`.
 
-Use the Step 1 validator, percentile filter, registry, response metadata shape,
-and error enums. Keep score-filter capability checks in the use-case/controller
-mapping path so Hacker News can return the explicit 422 unsupported-capability
-response.
+Use the Step 1 comment validator, percentile filter, registry, response
+metadata shape, and error enums from `src/app/comment/services` and
+`src/app/comment/types`. Keep score-filter capability checks in the
+use-case/controller mapping path so Hacker News can return the explicit 422
+unsupported-capability response.
 
-Wire `CommentSourceRegistry` from `src/app/comment` in `AppModule`; outbound
-source adapters should import source request enums and interfaces from
+Wire `CommentSourceRegistry` from `src/app/comment/services` in `AppModule`;
+outbound source adapters should import source request enums and interfaces from
 `src/ports/outbound`, not from `src/app`.
 
 ### Red
 
-- `POST /comments/latest` delegates to the comments use case;
+- `POST /comments/query` delegates to the comments use case;
 - Reddit comments are returned flat after percentile filtering;
 - depth and publication-date filters work for every implemented comment source;
 - Hacker News score-filter requests return `COMMENT_SCORE_FILTER_UNSUPPORTED`;
 - invalid requests map to stable HTTP 400 responses;
 - unsupported source/filter capability maps to HTTP 422;
 - response metadata reports fetched, matched, returned, and truncated counts;
-- `postman/signal-forge.postman_collection.json` contains `POST /comments/latest`.
+- `postman/signal-forge.postman_collection.json` contains `POST /comments/query`.
 
 ### Green
 
-- implement `GetLatestCommentsUseCase`;
-- implement `LatestCommentController`;
+- implement `GetCommentsUseCase`;
+- implement `CommentController`;
 - wire validator, percentile filter, and comment registry in `AppModule`;
 - add Hacker News unsupported-capability behavior for comments;
 - do not add offset pagination;

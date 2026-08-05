@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { GetHealthUseCase } from '../../../../app/health/get-health.use-case';
-import type { IGetHealthResult } from '../../../../app/health/get-health-result.interface';
+import type { IGetHealthResult } from '../../../../app/health/types/get-health-result.interface';
+import { GetHealthUseCase } from '../../../../app/health/use-cases/get-health.use-case';
 
 @Controller('health')
 export class HealthController {

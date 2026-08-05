@@ -1,6 +1,6 @@
-import { LATEST_COMMENT_SORT_DIRECTION } from './latest-comment-sort-direction.enum';
-import { LATEST_COMMENT_SORT_FIELD } from './latest-comment-sort-field.enum';
-import { ILatestCommentSourceRequest } from './latest-comment-source-request.interface';
+import { COMMENT_SORT_DIRECTION } from './comment-sort-direction.enum';
+import { COMMENT_SORT_FIELD } from './comment-sort-field.enum';
+import { ICommentSourceRequest } from './comment-source-request.interface';
 
 export interface ICommentSourceFetchFilters {
   minDepth?: number;
@@ -13,12 +13,12 @@ export interface ICommentSourceFetchFilters {
 }
 
 export interface ICommentSourceFetchSort {
-  by: LATEST_COMMENT_SORT_FIELD;
-  direction: LATEST_COMMENT_SORT_DIRECTION;
+  by: COMMENT_SORT_FIELD;
+  direction: COMMENT_SORT_DIRECTION;
 }
 
 export interface ICommentSourceFetchRequest {
-  source: ILatestCommentSourceRequest;
+  source: ICommentSourceRequest;
   filters: ICommentSourceFetchFilters;
   sort: ICommentSourceFetchSort;
   limit: number;

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { GetLatestContentItemsUseCase } from '../../../../app/content-item/get-latest-content-items.use-case';
-import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/latest-content-source-kind.enum';
+import { LATEST_CONTENT_SOURCE_KIND } from '../../../../app/content-item/types/latest-content-source-kind.enum';
+import { GetLatestContentItemsUseCase } from '../../../../app/content-item/use-cases/get-latest-content-items.use-case';
 import { LatestContentController } from './latest-content.controller';
 
 describe('LatestContentController', () => {

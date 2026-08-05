@@ -1,9 +1,9 @@
 import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import { GetLatestContentItemsUseCase } from '../../../../app/content-item/get-latest-content-items.use-case';
-import type { IGetLatestContentItemsRequest } from '../../../../app/content-item/get-latest-content-items-request.interface';
-import type { IGetLatestContentItemsResult } from '../../../../app/content-item/get-latest-content-items-result.interface';
-import { LatestContentValidationError } from '../../../../app/content-item/latest-content-validation-error';
+import type { IGetLatestContentItemsRequest } from '../../../../app/content-item/types/get-latest-content-items-request.interface';
+import type { IGetLatestContentItemsResult } from '../../../../app/content-item/types/get-latest-content-items-result.interface';
+import { LatestContentValidationError } from '../../../../app/content-item/types/latest-content-validation-error';
+import { GetLatestContentItemsUseCase } from '../../../../app/content-item/use-cases/get-latest-content-items.use-case';
 
 @Controller('content-items')
 export class LatestContentController {

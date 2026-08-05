@@ -9,10 +9,10 @@ import { HackerNewsContentSourceAdapter } from './adapters/outbound/content-sour
 import { RedditApiClient } from './adapters/outbound/content-source/reddit/reddit-api.client';
 import { RedditContentMapper } from './adapters/outbound/content-source/reddit/reddit-content.mapper';
 import { RedditContentSourceAdapter } from './adapters/outbound/content-source/reddit/reddit-content-source.adapter';
-import { ContentSourceRegistry } from './app/content-item/content-source.registry';
-import { GetLatestContentItemsUseCase } from './app/content-item/get-latest-content-items.use-case';
-import { LatestContentRequestValidator } from './app/content-item/latest-content-request-validator';
-import { GetHealthUseCase } from './app/health/get-health.use-case';
+import { ContentSourceRegistry } from './app/content-item/services/content-source-registry.service';
+import { LatestContentRequestValidator } from './app/content-item/services/latest-content-request-validator.service';
+import { GetLatestContentItemsUseCase } from './app/content-item/use-cases/get-latest-content-items.use-case';
+import { GetHealthUseCase } from './app/health/use-cases/get-health.use-case';
 
 @Module({
   imports: [
